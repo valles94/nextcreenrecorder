@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import logo from "../src/assets/NegativoNEXTdigital-ai.svg";
+import "./App.css"; // Importa el archivo CSS externo
 
 function App() {
     const [recording, setRecording] = useState(false);
@@ -7,25 +9,21 @@ function App() {
     const [endTime, setEndTime] = useState(null);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [totalDuration, setTotalDuration] = useState(null);
-    const [processing, setProcessing] = useState(false);
     const mediaRecorderRef = useRef(null);
     const recordedChunksRef = useRef([]);
     const timerRef = useRef(null);
 
-    // Función para formatear la hora en HH:MM:SS
     const getFormattedTime = () => {
         const now = new Date();
-        return now.toLocaleTimeString(); // HH:MM:SS
+        return now.toLocaleTimeString();
     };
 
-    // Formatea el tiempo transcurrido en MM:SS
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
     };
 
-    // Efecto para manejar el temporizador
     useEffect(() => {
         if (recording) {
             timerRef.current = setInterval(() => {
@@ -50,22 +48,19 @@ function App() {
             };
 
             mediaRecorderRef.current.onstop = async () => {
-                setProcessing(true); // Mostrar mensaje de "Procesando..."
                 const blob = new Blob(recordedChunksRef.current, { type: "video/webm" });
                 const videoURL = URL.createObjectURL(blob);
-                setVideoUrl(videoURL); // Guardar URL del video
+                setVideoUrl(videoURL);
                 recordedChunksRef.current = [];
-                setTotalDuration(elapsedTime); // Guardar duración total
-                setEndTime(getFormattedTime()); // Guardar la hora de fin
-                setProcessing(false); // Ocultar mensaje de "Procesando..."
+                setTotalDuration(elapsedTime);
+                setEndTime(getFormattedTime());
             };
 
-            // Guardar la hora de inicio y reiniciar el contador
-            setStartTime(getFormattedTime()); // Guardar la hora actual
-            setEndTime(null); // Reiniciar la hora de fin
+            setStartTime(getFormattedTime());
+            setEndTime(null);
             setElapsedTime(0);
             setTotalDuration(null);
-            setVideoUrl(null); // Limpiar video previo
+            setVideoUrl(null);
 
             mediaRecorderRef.current.start();
             setRecording(true);
@@ -83,8 +78,6 @@ function App() {
 
     const saveLocal = () => {
         if (!videoUrl) return;
-
-        // Obtener fecha y hora actual en formato YYYYMMDD_HHMMSS
         const now = new Date();
         const timestamp = now.toISOString().replace(/[-T:.Z]/g, "").slice(0, 15);
         const fileName = `screenRecording_${timestamp}.webm`;
@@ -98,46 +91,55 @@ function App() {
     };
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
-            <h1>🎥 Grabador de Pantalla</h1>
+        <div className="container">
+            <main>
+                <h1>Nextcreen Recorder</h1>
+                <p>Captura la pantalla de tu ordenador sin necesidad de instalar software en tu equipo.</p>
+                <p>
+                    Al finalizar la grabación podrás elegir entre <strong>Guardar en local</strong> la grabación (no comparte
+                    nada fuera del ordenador en que se graba) o <strong>Enviar a nuestra nube</strong> para que el equipo de Media
+                    pueda procesar el video.
+                </p>
 
-            {!recording ? (
-                <button onClick={startRecording}>Iniciar Grabación</button>
-            ) : (
-                <button onClick={stopRecording}>Detener Grabación</button>
-            )}
+                {!recording && !videoUrl && (
+                    <button onClick={startRecording}>START RECORDING</button>
+                )}
 
-            {recording && (
-                <div style={{ marginTop: "10px", fontSize: "18px", fontWeight: "bold" }}>
-                    🕒 <b>Hora de inicio:</b> {startTime}
-                    <br />
-                    ⏳ <b>Tiempo transcurrido:</b> {formatTime(elapsedTime)}
-                </div>
-            )}
-
-            {!recording && totalDuration !== null && (
-                <div style={{ marginTop: "10px", fontSize: "18px", fontWeight: "bold", color: "green" }}>
-                    ✅ <b>Tiempo total grabado:</b> {formatTime(totalDuration)}
-                    <br />
-                    ⏰ <b>Hora de inicio:</b> {startTime}
-                    <br />
-                    ⏹ <b>Hora de fin:</b> {endTime}
-                </div>
-            )}
-
-            {/* Mostrar mensaje de "Procesando..." mientras se genera el video */}
-            {processing && <p style={{ color: "orange", fontSize: "16px" }}>Procesando video... ⏳</p>}
-
-            {/* Vista previa del video antes de descargar */}
-            {videoUrl && !processing && (
-                <div>
-                    <h3>🎬 Vista Previa</h3>
-                    <video src={videoUrl} controls style={{ width: "500px", marginTop: "10px" }} />
-                    <div style={{ marginTop: "10px" }}>
-                        <button onClick={saveLocal}>Guardar en Local</button>
+                {recording && (
+                    <div>
+                        <button onClick={stopRecording} className="stop-btn">STOP RECORDING</button>
+                        <div className="timer-info">
+                            ⏳ <b>Elapsed time:</b> {formatTime(elapsedTime)}
+                            <br />
+                            🕒 <b>Start time:</b> {startTime}
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+
+                {!recording && videoUrl && (
+                    <div>
+                        <button onClick={startRecording}>NEW RECORDING</button>
+                        <div className="timer-info">
+                            ⏳ <b>Elapsed time:</b> {formatTime(totalDuration)}
+                            <br />
+                            🕒 <b>Start time:</b> {startTime}
+                            <br />
+                            ⏹ <b>Stop time:</b> {endTime}
+                        </div>
+
+                        {/* 📌 Video con botón de guardar */}
+                        <div className="video-container">
+                            <video src={videoUrl} controls className="video-preview" />
+                            <button onClick={saveLocal} className="save-btn">SAVE LOCAL RECORDING</button>
+                        </div>
+                    </div>
+                )}
+            </main>
+
+            <footer>
+                <span>Powered by</span>
+                <img src={logo} alt="Next Digital Logo" className="logo" />
+            </footer>
         </div>
     );
 }
