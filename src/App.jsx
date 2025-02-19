@@ -102,12 +102,12 @@ function App() {
                 </p>
 
                 {!recording && !videoUrl && (
-                    <button onClick={startRecording}>START RECORDING</button>
+                    <button onClick={startRecording}>NUEVA GRABACIÓN</button>
                 )}
 
                 {recording && (
                     <div>
-                        <button onClick={stopRecording} className="stop-btn">STOP RECORDING</button>
+                        <button onClick={stopRecording} className="stop-btn">PARAR GRABACIÓN</button>
                         <div className="timer-info">
                             ⏳ <b>Elapsed time:</b> {formatTime(elapsedTime)}
                             <br />
@@ -118,7 +118,7 @@ function App() {
 
                 {!recording && videoUrl && (
                     <div>
-                        <button onClick={startRecording}>NEW RECORDING</button>
+                        <button onClick={startRecording}>NUEVA GRABACIÓN</button>
                         <div className="timer-info">
                             ⏳ <b>Elapsed time:</b> {formatTime(totalDuration)}
                             <br />
@@ -130,7 +130,7 @@ function App() {
                         {/* 📌 Video con botón de guardar */}
                         <div className="video-container">
                             <video src={videoUrl} controls className="video-preview" />
-                            <button onClick={saveLocal} className="save-btn">SAVE LOCAL RECORDING</button>
+                            <button onClick={saveLocal} className="save-btn">GUARDAR GRABACIÓN</button>
                         </div>
                     </div>
                 )}
