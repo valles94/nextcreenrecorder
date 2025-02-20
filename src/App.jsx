@@ -96,9 +96,8 @@ function App() {
                 <h1>Nextcreen Recorder</h1>
                 <p>Captura la pantalla de tu ordenador sin necesidad de instalar software en tu equipo.</p>
                 <p>
-                    Al finalizar la grabación podrás elegir entre <strong>Guardar en local</strong> la grabación (no comparte
-                    nada fuera del ordenador en que se graba) o <strong>Enviar a nuestra nube</strong> para que el equipo de Media
-                    pueda procesar el video.
+                    Al finalizar la grabación podrás elegir <strong>Guardar en local</strong> la grabación (no comparte
+                    nada fuera del ordenador en que se graba).
                 </p>
 
                 {!recording && !videoUrl && (
