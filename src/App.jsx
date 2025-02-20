@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import logo from "../src/assets/NegativoNEXTdigital-ai.svg";
+import logo2 from "./assets/SirviendoCodigo-WT-name.svg";
 import "./App.css"; // Importa el archivo CSS externo
 
 function App() {
@@ -93,10 +94,12 @@ function App() {
     return (
         <div className="container">
             <main>
+                <img src={logo2} alt="Siviendo Código Logo" className="logo2" />
+                <br/><br/>
                 <h1>Nextcreen Recorder</h1>
                 <p>Captura la pantalla de tu ordenador sin necesidad de instalar software en tu equipo.</p>
                 <p>
-                    Al finalizar la grabación podrás elegir <strong>Guardar en local</strong> la grabación (no comparte
+                    Al finalizar la grabación podrás elegir <strong>GUARDAR GRABACIÓN</strong> la grabación (no comparte
                     nada fuera del ordenador en que se graba).
                 </p>
 

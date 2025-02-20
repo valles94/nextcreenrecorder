@@ -239,6 +239,17 @@ footer {
   color: #bbb;
 }
 
+.logo2 {
+  width: 150px;
+  margin-left: 10px;
+}
+
+width: 100%;
+padding: 10px;
+background: #1a1a1a;
+color: #bbb;
+}
+
 /* Logo */
 .logo {
   width: 120px;
