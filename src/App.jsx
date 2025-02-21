@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import logo from "../src/assets/NegativoNEXTdigital-ai.svg";
 import logo2 from "./assets/SirviendoCodigo-WT-name.svg";
-import "./App.css"; // Importa el archivo CSS externo
+import { checkBrowserCompatibility } from "./utils";
+import "./App.css";
 
 function App() {
+    const [compatibility, setCompatibility] = useState({ compatible: true, reason: "" });
     const [recording, setRecording] = useState(false);
     const [videoUrl, setVideoUrl] = useState(null);
     const [startTime, setStartTime] = useState(null);
@@ -26,6 +28,9 @@ function App() {
     };
 
     useEffect(() => {
+        const result = checkBrowserCompatibility();
+        setCompatibility(result);
+
         if (recording) {
             timerRef.current = setInterval(() => {
                 setElapsedTime((prev) => prev + 1);
@@ -98,6 +103,15 @@ function App() {
                 <br/><br/>
                 <h1>Nextcreen Recorder</h1>
                 <p>Captura la pantalla de tu ordenador sin necesidad de instalar software en tu equipo.</p>
+                {!compatibility.compatible && (
+                    <div className="alert">
+                        ⚠️ {compatibility.reason}
+                        <br />
+                        🔹 **Compatibilidad recomendada:**
+                        - **Sistemas operativos:** Windows, macOS, Linux y Android
+                        - **Navegadores:** Chrome (v72+), Edge (v79+), Firefox (v66+ en escritorio), Opera (v60+)
+                    </div>
+                )}
                 <p>
                     Al finalizar la grabación podrás elegir <strong>GUARDAR GRABACIÓN</strong> la grabación (no comparte
                     nada fuera del ordenador en que se graba).
