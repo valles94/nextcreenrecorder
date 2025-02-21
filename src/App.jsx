@@ -102,14 +102,15 @@ function App() {
                 <img src={logo2} alt="Siviendo Código Logo" className="logo2" />
                 <br/><br/>
                 <h1>Nextcreen Recorder</h1>
-                <p>Captura la pantalla de tu ordenador sin necesidad de instalar software en tu equipo.</p>
+                <p>Captura la pantalla de tu ordenador sin necesidad de instalar nada en tu equipo.</p>
+                {/* 🔹 Mostrar alerta solo si el navegador no es compatible */}
                 {!compatibility.compatible && (
                     <div className="alert">
-                        ⚠️ {compatibility.reason}
-                        <br />
-                        🔹 **Compatibilidad recomendada:**
-                        - **Sistemas operativos:** Windows, macOS, Linux y Android
-                        - **Navegadores:** Chrome (v72+), Edge (v79+), Firefox (v66+ en escritorio), Opera (v60+)
+                        <ul>
+                            {compatibility.reason.map((item, index) => (
+                                <li key={index}>{item}</li>
+                            ))}
+                        </ul>
                     </div>
                 )}
                 <p>
