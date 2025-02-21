@@ -10,17 +10,5 @@ export const checkBrowserCompatibility = () => {
             ]
         };
     }
-
-    // 🚫 Bloquear iOS (no soporta grabación en navegador)
-    if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
-        return {
-            compatible: false,
-            reason: [
-                "iOS no permite la grabación de pantalla desde el navegador.",
-                "Prueba en un ordenador con Chrome, Edge, Firefox o Opera."
-            ]
-        };
-    }
-
     return { compatible: true, reason: [] };
 };
