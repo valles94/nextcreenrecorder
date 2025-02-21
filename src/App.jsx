@@ -106,11 +106,7 @@ function App() {
                 {/* 🔹 Mostrar alerta solo si el navegador no es compatible */}
                 {!compatibility.compatible && (
                     <div className="alert">
-                        <ul>
-                            {compatibility.reason.map((item, index) => (
-                                <li key={index}>{item}</li>
-                            ))}
-                        </ul>
+                            {compatibility.reason}
                     </div>
                 )}
                 <p>

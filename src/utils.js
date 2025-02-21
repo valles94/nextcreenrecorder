@@ -1,14 +1,11 @@
-export const checkBrowserCompatibility = () => {
-    // 🚫 Comprobar si la API de grabación está disponible
-    if (!navigator.mediaDevices?.getDisplayMedia) {
-        return {
-            compatible: false,
-            reason: [
-                "Tu navegador no soporta la grabación de pantalla mediante getDisplayMedia. Prueba con:",
-                "Sistemas operativos: Windows, macOS y Linux",
-                "Navegadores: Chrome (v72+), Edge (v79+), Firefox (v66+), Opera (v60+)"
-            ]
-        };
-    }
-    return { compatible: true, reason: [] };
-};
+ export const checkBrowserCompatibility = () => {
+        if (!navigator.mediaDevices?.getDisplayMedia) {
+            return {
+                compatible: false,
+                reason: "Tu navegador no soporta la grabación de pantalla. Prueba usando Chrome, Edge, Firefox o Opera en Windows, macOS y Linux."
+            };
+        }
+
+        // ✅ Si pasa la validación, el navegador es compatible
+        return { compatible: true, reason: "esto" };
+    };
