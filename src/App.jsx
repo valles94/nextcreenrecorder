@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import logo from "../src/assets/NegativoNEXTdigital-ai.svg";
 import logo2 from "./assets/SirviendoCodigo-WT-name.svg";
 import { checkBrowserCompatibility } from "./utils";
+import { uploadToGoogleDrive } from "./googleDrive";
 import "./App.css";
 
 function App() {
@@ -44,9 +45,15 @@ function App() {
 
     const startRecording = async () => {
         try {
-            const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+            const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+            const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-            mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: "video/webm" });
+            const combinedStream = new MediaStream([
+                ...screenStream.getVideoTracks(),
+                ...audioStream.getAudioTracks()
+            ]);
+
+            mediaRecorderRef.current = new MediaRecorder(combinedStream, { mimeType: "video/webm" });
             recordedChunksRef.current = [];
 
             mediaRecorderRef.current.ondataavailable = (event) => {
@@ -71,7 +78,7 @@ function App() {
             mediaRecorderRef.current.start();
             setRecording(true);
         } catch (error) {
-            console.error("Error al acceder a la pantalla:", error);
+            console.error("Error al acceder a la pantalla o micrófono:", error);
         }
     };
 
@@ -100,17 +107,18 @@ function App() {
         <div className="container">
             <main>
                 <img src={logo2} alt="Siviendo Código Logo" className="logo2" />
-                <br/><br/>
+                <br /><br />
                 <h1>Nextcreen Recorder</h1>
                 <p>Captura la pantalla de tu ordenador sin necesidad de instalar nada en tu equipo.</p>
-                {/* 🔹 Mostrar alerta solo si el navegador no es compatible */}
+
                 {!compatibility.compatible && (
                     <div className="alert">
-                            {compatibility.reason}
+                        {compatibility.reason}
                     </div>
                 )}
+
                 <p>
-                    Al finalizar la grabación podrás elegir <strong>GUARDAR GRABACIÓN</strong> la grabación (no comparte
+                    Al finalizar podrás elegir <strong>GUARDAR GRABACIÓN</strong> (no comparte
                     nada fuera del ordenador en que se graba).
                 </p>
 
@@ -140,10 +148,10 @@ function App() {
                             ⏹ <b>Stop time:</b> {endTime}
                         </div>
 
-                        {/* 📌 Video con botón de guardar */}
                         <div className="video-container">
                             <video src={videoUrl} controls className="video-preview" />
-                            <button onClick={saveLocal} className="save-btn">GUARDAR GRABACIÓN</button>
+                            <button onClick={saveLocal} className="save-btn">GUARDAR</button>
+                            {/* <button onClick={handleSendToDrive} className="send-btn">ENVIAR</button> */}
                         </div>
                     </div>
                 )}
