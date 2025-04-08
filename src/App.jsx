@@ -40,8 +40,22 @@ function App() {
             clearInterval(timerRef.current);
         }
 
-        return () => clearInterval(timerRef.current);
-    }, [recording]);
+        // ⚠️ Bloquear cierre si hay una grabación sin guardar
+        const handleBeforeUnload = (e) => {
+            if (videoUrl) {
+                e.preventDefault();
+                e.returnValue = ""; // necesario para algunos navegadores
+            }
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            clearInterval(timerRef.current);
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [recording, videoUrl]);
+
 
     const startRecording = async () => {
         try {
