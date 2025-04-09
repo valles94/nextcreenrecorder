@@ -60,13 +60,18 @@ function App() {
 
     const startRecording = async () => {
         try {
-            setHasBeenSaved(false);
             const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-            const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+            let audioStream = null;
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            } catch (audioError) {
+                console.warn("No se pudo acceder al micrófono. Se grabará solo la pantalla.");
+            }
 
             const combinedStream = new MediaStream([
                 ...screenStream.getVideoTracks(),
-                ...audioStream.getAudioTracks()
+                ...(audioStream ? audioStream.getAudioTracks() : [])
             ]);
 
             mediaRecorderRef.current = new MediaRecorder(combinedStream, { mimeType: "video/webm" });
@@ -90,13 +95,15 @@ function App() {
             setElapsedTime(0);
             setTotalDuration(null);
             setVideoUrl(null);
+            setHasBeenSaved(false);
 
             mediaRecorderRef.current.start();
             setRecording(true);
         } catch (error) {
-            console.error("Error al acceder a la pantalla o micrófono:", error);
+            console.error("Error al acceder a la pantalla:", error);
         }
     };
+
 
     const stopRecording = () => {
         if (mediaRecorderRef.current) {
