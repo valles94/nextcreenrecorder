@@ -16,6 +16,7 @@ function App() {
     const mediaRecorderRef = useRef(null);
     const recordedChunksRef = useRef([]);
     const timerRef = useRef(null);
+    const [hasBeenSaved, setHasBeenSaved] = useState(false);
 
     const getFormattedTime = () => {
         const now = new Date();
@@ -40,11 +41,11 @@ function App() {
             clearInterval(timerRef.current);
         }
 
-        // ⚠️ Bloquear cierre si hay una grabación sin guardar
+        // ⚠️ Bloquear cierre si hay grabación sin guardar
         const handleBeforeUnload = (e) => {
-            if (videoUrl) {
+            if (videoUrl && !hasBeenSaved) {
                 e.preventDefault();
-                e.returnValue = ""; // necesario para algunos navegadores
+                e.returnValue = ""; // Necesario para activar la advertencia en navegadores
             }
         };
 
@@ -54,11 +55,12 @@ function App() {
             clearInterval(timerRef.current);
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
-    }, [recording, videoUrl]);
+    }, [recording, videoUrl, hasBeenSaved]);
 
 
     const startRecording = async () => {
         try {
+            setHasBeenSaved(false);
             const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
             const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -115,6 +117,7 @@ function App() {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        setHasBeenSaved(true);
     };
 
     return (
