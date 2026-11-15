@@ -1,9 +1,0 @@
-{
-  "title": "Nextcreen Recorder",
-  "description": "Capture your screen without installing any software.",
-  "startRecording": "NEW RECORDING",
-  "stopRecording": "STOP RECORDING",
-  "saveRecording": "SAVE",
-  "sendRecording": "SEND",
-  "browserWarning": "Your browser does not support screen recording. Try Chrome, Edge, Firefox, or Opera."
-}

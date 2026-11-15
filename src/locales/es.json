@@ -1,9 +1,0 @@
-{
-  "title": "Nextcreen Recorder",
-  "description": "Captura la pantalla de tu ordenador sin necesidad de instalar software.",
-  "startRecording": "NUEVA GRABACIÓN",
-  "stopRecording": "PARAR GRABACIÓN",
-  "saveRecording": "GUARDAR",
-  "sendRecording": "ENVIAR",
-  "browserWarning": "Tu navegador no soporta la grabación de pantalla. Prueba con Chrome, Edge, Firefox u Opera."
-}

@@ -1,9 +1,0 @@
-{
-  "title": "Nextcreen Recorder",
-  "description": "Capturez votre écran sans installer de logiciel.",
-  "startRecording": "NOUVEL ENREGISTREMENT",
-  "stopRecording": "ARRÊTER L'ENREGISTREMENT",
-  "saveRecording": "ENREGISTRER",
-  "sendRecording": "ENVOYER",
-  "browserWarning": "Votre navigateur ne prend pas en charge l'enregistrement d'écran. Essayez Chrome, Edge, Firefox ou Opera."
-}

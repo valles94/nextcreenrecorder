@@ -5,22 +5,6 @@
   box-sizing: border-box;
 }
 
-/* Contenedor principal */
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  width: 80%;
-  max-width: 500px;
-  min-height: 50vh;
-  padding: 20px;
-  border: 0.5px solid white;
-  border-radius: 16px;
-  background-color: #1a1a1a;
-  text-align: center;
-}
-
 /* Estilos generales */
 html {
   height: 100%;
@@ -42,6 +26,22 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+}
+
+/* Contenedor principal */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  max-width: 500px;
+  min-height: 50vh;
+  padding: 20px;
+  border: 0.5px solid white;
+  border-radius: 16px;
+  background-color: #1a1a1a;
   text-align: center;
 }
 
@@ -68,7 +68,7 @@ p {
   max-width: 90%;
 }
 
-/* Botón de grabación */
+/* Botón base */
 button {
   margin-top: 20px;
   padding: 12px 24px;
@@ -87,6 +87,12 @@ button:hover {
   color: white;
 }
 
+/* Botón de guardar local */
+button.local {
+  background-color: #69c4e9;
+  color: black;
+}
+
 /* Botón de detener grabación */
 .stop-btn {
   background-color: red;
@@ -102,6 +108,20 @@ button:hover {
   background-color: darkred;
 }
 
+/* Botón de guardar */
+.save-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: blue;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+.save-btn:hover {
+  background-color: red;
+}
+
 /* Información del tiempo */
 .timer-info {
   margin-top: 10px;
@@ -109,6 +129,13 @@ button:hover {
 }
 
 /* Vista previa del video */
+.video-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
 .video-preview {
   width: 100%;
   max-width: 80%;
@@ -117,159 +144,7 @@ button:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Footer */
-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;/* Reset básico */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  /* Contenedor principal */
-  .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    width: 80%;
-    max-width: 500px;
-    min-height: 50vh;
-    padding: 20px;
-    border: 0.5px solid white;
-    border-radius: 16px;
-    background-color: #1a1a1a;
-    text-align: center;
-  }
-
-  /* Estilos generales */
-  html, body {
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background-color: #1a1a1a;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* Contenido principal */
-  main {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* Botón de grabación */
-  button {
-    margin-top: 20px;
-    padding: 12px 24px;
-    font-size: 1rem;
-    font-weight: bold;
-    background-color: lightgrey;
-    color: black;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
-  }
-
-  button:hover {
-    background-color: red;
-    color: white;
-  }
-
-  /* Botón de detener grabación */
-  .stop-btn {
-    background-color: red;
-    color: white;
-  }
-
-  .stop-btn:hover {
-    background-color: darkred;
-  }
-
-  /* Vista previa del video con botón */
-  .video-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-  }
-
-  .video-preview {
-    width: 100%;
-    max-width: 50%;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .save-btn {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: blue;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
-  }
-
-  .save-btn:hover {
-    background-color: red;
-  }
-
-  /* Footer */
-  footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: .5rem;
-  }
-
-  .logo {
-    width: 120px;
-    margin-left: 10px;
-  }
-
-  width: 100%;
-  padding: 10px;
-  background: #1a1a1a;
-  color: #bbb;
-}
-
-.logo2 {
-  width: 150px;
-  margin-left: 10px;
-}
-
-width: 100%;
-padding: 10px;
-background: #1a1a1a;
-color: #bbb;
-}
-
-/* Logo */
-.logo {
-  width: 120px;
-  margin-left: 10px;
-}
-
-button.local{
-  margin-top: 20px;
-  padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: bold;
-  background-color: #69c4e9;
-  color: black;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
-}
-
+/* Alerta de compatibilidad */
 .alert {
   background-color: #ffcc00;
   color: #333;
@@ -295,3 +170,66 @@ button.local{
   margin: 5px 0;
 }
 
+/* Footer */
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  background: #1a1a1a;
+  color: #bbb;
+  font-size: 0.5rem;
+}
+
+/* Logos */
+.logo {
+  width: 120px;
+  margin-left: 10px;
+}
+
+.logo2 {
+  width: 290px;
+  margin-left: 10px;
+}
+/* Visor en directo */
+.live-badge {
+  color: #e53935;
+  font-weight: bold;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  animation: live-blink 1.5s infinite;
+}
+
+@keyframes live-blink {
+  50% { opacity: 0.4; }
+}
+
+
+/* Avisos de pantalla perdida / detectada */
+.screen-alert {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #4a3500;
+  border: 1px solid #f0b400;
+  color: #ffe08a;
+  font-size: 0.95rem;
+}
+
+.screen-alert button {
+  display: block;
+  margin: 10px auto 0;
+}
+
+.screen-alert--ok {
+  background: #0f3a30;
+  border-color: #6fc0ab;
+  color: #c9f0e4;
+}
+
+.change-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
