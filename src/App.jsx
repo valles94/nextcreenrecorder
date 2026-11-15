@@ -6,6 +6,13 @@ import { createCompositor } from "./compositor";
 import fixWebmDuration from "fix-webm-duration";
 import "./App.css";
 
+// Calidad de grabación: VP9 a 5 Mbps (texto nítido, ~35-40 MB por minuto).
+// Si el navegador no soporta VP9, se usa VP8 y, en último caso, lo que elija el navegador.
+const VIDEO_BITRATE = 5_000_000;
+const MIME_CANDIDATES = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"];
+const getRecordingMimeType = () =>
+    MIME_CANDIDATES.find((type) => MediaRecorder.isTypeSupported(type)) || "video/webm";
+
 function App() {
     const [compatibility, setCompatibility] = useState({ compatible: true, reason: "" });
     const [recording, setRecording] = useState(false);
@@ -128,7 +135,10 @@ function App() {
                 ...compositor.stream.getVideoTracks(),
                 ...audioTracksRef.current,
             ]);
-            mediaRecorderRef.current = new MediaRecorder(combinedStream, { mimeType: "video/webm" });
+            mediaRecorderRef.current = new MediaRecorder(combinedStream, {
+                mimeType: getRecordingMimeType(),
+                videoBitsPerSecond: VIDEO_BITRATE,
+            });
             recordedChunksRef.current = [];
 
             mediaRecorderRef.current.ondataavailable = (event) => {
