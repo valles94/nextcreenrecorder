@@ -4,6 +4,7 @@ import logoSC from "./assets/SirviendoCodigo-logo.svg";
 import { checkBrowserCompatibility } from "./utils";
 import { createCompositor } from "./compositor";
 import fixWebmDuration from "fix-webm-duration";
+import { notify, requestNotificationPermission } from "./notifications";
 import "./App.css";
 
 // Calidad de grabación: VP9 a 5 Mbps (texto nítido, ~35-40 MB por minuto).
@@ -24,6 +25,8 @@ function App() {
     const [hasBeenSaved, setHasBeenSaved] = useState(false);
     const [sourceLost, setSourceLost] = useState(false);
     const [newScreenDetected, setNewScreenDetected] = useState(false);
+    const [hasBackup, setHasBackup] = useState(false);
+    const [switchedToBackup, setSwitchedToBackup] = useState(false);
 
     const mediaRecorderRef = useRef(null);
     const recordedChunksRef = useRef([]);
@@ -33,6 +36,7 @@ function App() {
     const elapsedRef = useRef(0);
     const liveVideoRef = useRef(null);
     const compositorRef = useRef(null);
+    const backupStreamRef = useRef(null);
 
     const getFormattedTime = () => new Date().toLocaleTimeString();
 
@@ -113,7 +117,37 @@ function App() {
         };
     }, [videoUrl]);
 
+    const releaseBackup = () => {
+        backupStreamRef.current?.getTracks().forEach((track) => track.stop());
+        backupStreamRef.current = null;
+        setHasBackup(false);
+    };
+
+    // Se ha perdido la pantalla que se grababa (p. ej. se ha soltado el HDMI)
+    const handleSourceLost = () => {
+        const backup = backupStreamRef.current;
+        if (backup && backup.getVideoTracks()[0]?.readyState === "live") {
+            // Hay pantalla de respaldo: pasamos a ella automáticamente
+            backupStreamRef.current = null;
+            setHasBackup(false);
+            compositorRef.current?.setSource(backup);
+            setSwitchedToBackup(true);
+            notify(
+                "Nextcreen: se ha perdido la pantalla",
+                "La grabación ha pasado automáticamente a la pantalla de respaldo."
+            );
+        } else {
+            setSourceLost(true);
+            notify(
+                "Nextcreen: se ha perdido la pantalla",
+                "La grabación sigue, pero en negro. Vuelve a la web para elegir otra pantalla."
+            );
+        }
+    };
+
     const startRecording = async () => {
+        // Pedimos permiso para notificaciones ahora, que el usuario acaba de hacer clic
+        requestNotificationPermission();
         try {
             const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
 
@@ -126,7 +160,7 @@ function App() {
 
             // Grabamos el lienzo intermedio, no la pantalla: si la pantalla se pierde, sigue en negro
             const compositor = createCompositor(screenStream, {
-                onSourceLost: () => setSourceLost(true),
+                onSourceLost: handleSourceLost,
             });
             compositorRef.current = compositor;
             audioTracksRef.current = audioStream ? audioStream.getAudioTracks() : [];
@@ -162,6 +196,7 @@ function App() {
                 // Liberar pantalla, micrófono y lienzo
                 compositorRef.current?.stop();
                 compositorRef.current = null;
+                releaseBackup();
                 audioTracksRef.current.forEach((track) => track.stop());
                 audioTracksRef.current = [];
                 if (liveVideoRef.current) liveVideoRef.current.srcObject = null;
@@ -176,6 +211,8 @@ function App() {
             setHasBeenSaved(false);
             setSourceLost(false);
             setNewScreenDetected(false);
+            setSwitchedToBackup(false);
+            releaseBackup();
 
             // Esperamos al primer fotograma real (máx. 3 s) para que el vídeo no empiece en negro
             await Promise.race([compositor.ready, new Promise((r) => setTimeout(r, 3000))]);
@@ -196,9 +233,29 @@ function App() {
             compositorRef.current?.setSource(screenStream);
             setSourceLost(false);
             setNewScreenDetected(false);
+            setSwitchedToBackup(false);
         } catch (error) {
             // El usuario ha cancelado: seguimos grabando lo que hubiera (o negro)
             console.warn("Cambio de pantalla cancelado:", error);
+        }
+    };
+
+    // Pantalla de respaldo: se mantiene preparada y, si se pierde la principal,
+    // la grabación pasa a ella sola, sin que nadie tenga que hacer nada.
+    const addBackupScreen = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+            releaseBackup();
+            backupStreamRef.current = stream;
+            setHasBackup(true);
+            // Si la propia pantalla de respaldo desaparece, dejamos de contar con ella
+            stream.getVideoTracks()[0].addEventListener("ended", () => {
+                if (backupStreamRef.current !== stream) return;
+                backupStreamRef.current = null;
+                setHasBackup(false);
+            });
+        } catch (error) {
+            console.warn("Pantalla de respaldo cancelada:", error);
         }
     };
 
@@ -208,6 +265,7 @@ function App() {
             setRecording(false);
             setSourceLost(false);
             setNewScreenDetected(false);
+            setSwitchedToBackup(false);
         }
     };
 
@@ -255,7 +313,13 @@ function App() {
                 </p>
 
                 {!recording && !videoUrl && (
-                    <button onClick={startRecording}>NUEVA GRABACIÓN</button>
+                    <>
+                        <button onClick={startRecording}>NUEVA GRABACIÓN</button>
+                        <p className="tip">
+                            💡 ¿Usas proyector con el <b>escritorio duplicado</b>? Elige la pantalla{" "}
+                            <b>del portátil</b>: se ve lo mismo y, si se suelta el cable, la grabación no se corta.
+                        </p>
+                    </>
                 )}
 
                 {recording && (
@@ -276,6 +340,12 @@ function App() {
                             </div>
                         )}
 
+                        {switchedToBackup && !newScreenDetected && (
+                            <div className="screen-alert screen-alert--ok">
+                                🛟 Se perdió la pantalla y la grabación ha pasado sola a la <b>pantalla de respaldo</b>.
+                            </div>
+                        )}
+
                         {newScreenDetected && (
                             <div className="screen-alert screen-alert--ok">
                                 🖥️ Se ha detectado una pantalla nueva (¿ha vuelto el proyector?).
@@ -288,6 +358,20 @@ function App() {
                             <video ref={liveVideoRef} autoPlay muted playsInline className="video-preview" />
                             {!sourceLost && !newScreenDetected && (
                                 <button onClick={changeScreen} className="change-btn">CAMBIAR PANTALLA</button>
+                            )}
+                        </div>
+
+                        <div className="backup-box">
+                            {hasBackup ? (
+                                <>🛟 <b>Pantalla de respaldo preparada.</b> Si se pierde la que grabas, la grabación pasará a ella sola.</>
+                            ) : (
+                                <>
+                                    🛟 ¿Tienes más de una pantalla? Añade una <b>de respaldo</b> (por ejemplo, la del
+                                    portátil): si se pierde la que grabas, la grabación pasará a ella automáticamente.
+                                    <button onClick={addBackupScreen} className="change-btn">
+                                        AÑADIR PANTALLA DE RESPALDO
+                                    </button>
+                                </>
                             )}
                         </div>
                     </div>
