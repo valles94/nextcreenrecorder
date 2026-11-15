@@ -313,13 +313,7 @@ function App() {
                 </p>
 
                 {!recording && !videoUrl && (
-                    <>
-                        <button onClick={startRecording}>NUEVA GRABACIÓN</button>
-                        <p className="tip">
-                            💡 ¿Usas proyector con el <b>escritorio duplicado</b>? Elige la pantalla{" "}
-                            <b>del portátil</b>: se ve lo mismo y, si se suelta el cable, la grabación no se corta.
-                        </p>
-                    </>
+                    <button onClick={startRecording}>NUEVA GRABACIÓN</button>
                 )}
 
                 {recording && (

@@ -234,13 +234,6 @@ footer {
   font-size: 0.85rem;
 }
 
-/* Consejo antes de grabar */
-.tip {
-  margin-top: 14px;
-  font-size: 0.85rem;
-  color: #bbb;
-}
-
 /* Pantalla de respaldo */
 .backup-box {
   margin-top: 15px;
